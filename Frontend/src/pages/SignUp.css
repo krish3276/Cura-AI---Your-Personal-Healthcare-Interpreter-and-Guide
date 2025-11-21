@@ -1,0 +1,265 @@
+.auth-container {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  width: 80vh;
+}
+
+.auth-card {
+  background: white;
+  border-radius: 24px;
+  padding: 40px;
+  max-width: 450px;
+  width: 100%;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+}
+
+.auth-header {
+  text-align: center;
+  margin-bottom: 32px;
+}
+
+.app-title {
+  font-size: 32px;
+  font-weight: 700;
+  color: #000;
+  margin-bottom: 16px;
+}
+
+.auth-title {
+  font-size: 24px;
+  font-weight: 600;
+  color: #000;
+  margin-bottom: 12px;
+}
+
+.auth-subtitle {
+  font-size: 14px;
+  color: #6b7280;
+  line-height: 1.5;
+}
+
+.error-message {
+  background: #fee;
+  color: #c00;
+  padding: 12px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  font-size: 14px;
+  text-align: center;
+}
+
+.success-message {
+  background: #efe;
+  color: #0a0;
+  padding: 12px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  font-size: 14px;
+  text-align: center;
+}
+
+.auth-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.form-group label {
+  font-size: 14px;
+  font-weight: 500;
+  color: #000;
+}
+
+.form-group input {
+  padding: 14px 16px;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  font-size: 14px;
+  transition: all 0.3s ease;
+  background: #f9fafb;
+}
+
+.form-group input:focus {
+  outline: none;
+  border-color: #22d3ee;
+  background: white;
+  box-shadow: 0 0 0 3px rgba(34, 211, 238, 0.1);
+}
+
+.form-group input::placeholder {
+  color: #9ca3af;
+}
+
+.password-input {
+  position: relative;
+}
+
+.password-input input {
+  width: 100%;
+  padding-right: 45px;
+}
+
+.toggle-password {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 18px;
+  padding: 4px 8px;
+}
+
+.btn-primary {
+  background: #22d3ee;
+  color: #000;
+  border: none;
+  padding: 14px 24px;
+  border-radius: 12px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-top: 8px;
+}
+
+.btn-primary:hover {
+  background: #06b6d4;
+  transform: translateY(-2px);
+  box-shadow: 0 10px 20px rgba(34, 211, 238, 0.3);
+}
+
+.btn-primary:disabled {
+  background: #a5f3fc;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.auth-footer {
+  text-align: center;
+  margin-top: 24px;
+  font-size: 14px;
+  color: #6b7280;
+}
+
+.auth-footer a {
+  color: #22d3ee;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.auth-footer a:hover {
+  text-decoration: underline;
+}
+
+.tab-buttons {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 24px;
+  justify-content: center;
+}
+
+.tab-button {
+  padding: 10px 24px;
+  border: 1px solid #e5e7eb;
+  background: white;
+  border-radius: 12px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  color: #6b7280;
+}
+
+.tab-button.active {
+  background: white;
+  border-color: #22d3ee;
+  color: #000;
+}
+
+.tab-button:hover {
+  border-color: #22d3ee;
+}
+
+.forgot-password {
+  text-align: right;
+  margin-top: -8px;
+  margin-bottom: 8px;
+}
+
+.forgot-password a {
+  font-size: 14px;
+  color: #22d3ee;
+  text-decoration: none;
+}
+
+.forgot-password a:hover {
+  text-decoration: underline;
+}
+
+.divider {
+  text-align: center;
+  margin: 24px 0;
+  position: relative;
+}
+
+.divider::before,
+.divider::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  width: 40%;
+  height: 1px;
+  background: #e5e7eb;
+}
+
+.divider::before {
+  left: 0;
+}
+
+.divider::after {
+  right: 0;
+}
+
+.divider span {
+  color: #6b7280;
+  font-size: 14px;
+  background: white;
+  padding: 0 12px;
+}
+
+.btn-google {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 14px 24px;
+  border: 1px solid #e5e7eb;
+  background: white;
+  border-radius: 12px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  width: 100%;
+}
+
+.btn-google:hover {
+  border-color: #22d3ee;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.btn-google img {
+  width: 20px;
+  height: 20px;
+}
