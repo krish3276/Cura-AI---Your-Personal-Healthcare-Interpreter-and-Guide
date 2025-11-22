@@ -119,7 +119,7 @@ function SignUp({ setAuth }) {
                 className="toggle-password"
                 onClick={() => setShowPassword(!showPassword)}
               >
-                {showPassword ? '👁️' : '🙈'}
+                {/* {showPassword ? '👁️' : '🙈'}x */}
               </button>
             </div>
           </div>
@@ -141,7 +141,7 @@ function SignUp({ setAuth }) {
                 className="toggle-password"
                 onClick={() => setShowConfirmPassword(!showConfirmPassword)}
               >
-                {showConfirmPassword ? '👁️' : '🙈'}
+                {/* {showConfirmPassword ? '👁️' : '🙈'} */}
               </button>
             </div>
           </div>
