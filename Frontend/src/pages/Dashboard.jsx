@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { authService } from '../services/api'
+import missionImage from '../assets/mission.jpg'
 import './Dashboard.css'
 
 function Dashboard() {
@@ -65,7 +66,11 @@ function Dashboard() {
             </button>
           </div>
           <div className="hero-image">
-            <div className="gradient-circle"></div>
+            <img 
+              src="https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?w=600&h=400&fit=crop" 
+              alt="Medical Technology" 
+              className="medical-tech-img"
+            />
           </div>
         </div>
       </section>
@@ -113,7 +118,13 @@ function Dashboard() {
       <section id="mission" className="mission-section">
         <div className="mission-content">
           <div className="mission-image">
-            <div className="gradient-circle-dark"></div>
+            <div className="gradient-circle-dark">
+              <img 
+                src={missionImage}
+                alt="Healthcare Mission"
+                className="mission-img"
+              />
+            </div>
           </div>
           <div className="mission-text">
             <h2 className="section-title-left">Our Mission: Healthcare, Reimagined</h2>
