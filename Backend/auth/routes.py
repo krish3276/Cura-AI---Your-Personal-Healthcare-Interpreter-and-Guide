@@ -165,3 +165,43 @@ async def dashboard(current_user: User = Depends(get_current_user)):
             }
         }
     )
+
+
+@router.post("/refresh", response_model=dict)
+async def refresh_access_token(refresh_token: str, db: Session = Depends(get_db)):
+    """
+    Refresh access token using refresh token
+    
+    - **refresh_token**: Valid refresh token
+    
+    Returns new access_token
+    """
+    from auth.jwt_handler import verify_token
+    
+    credentials_exception = HTTPException(
+        status_code=status.HTTP_401_UNAUTHORIZED,
+        detail="Invalid or expired refresh token",
+        headers={"WWW-Authenticate": "Bearer"},
+    )
+    
+    # Verify refresh token
+    token_data = verify_token(refresh_token, credentials_exception)
+    
+    # Get user from database
+    user = db.query(User).filter(User.id == token_data.user_id).first()
+    
+    if not user or not user.is_active:
+        raise credentials_exception
+    
+    # Create new access token
+    new_token_data = {"user_id": user.id, "username": user.username}
+    new_access_token = create_access_token(data=new_token_data)
+    
+    return success_response(
+        message="Token refreshed successfully",
+        data={
+            "access_token": new_access_token,
+            "token_type": "bearer",
+            "expires_in": 18000  # 5 hours in seconds
+        }
+    )

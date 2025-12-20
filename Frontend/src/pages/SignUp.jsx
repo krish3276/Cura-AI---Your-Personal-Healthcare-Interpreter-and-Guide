@@ -47,16 +47,30 @@ function SignUp({ setAuth }) {
     setLoading(true)
 
     try {
-      await authService.signup({
+      console.log('Submitting signup...')
+      const result = await authService.signup({
         username: formData.username,
         email: formData.email,
         password: formData.password
       })
       
+      console.log('Signup successful:', result)
       // Redirect to login page after successful signup
       navigate('/login')
     } catch (err) {
-      setError(err.response?.data?.detail || 'Signup failed. Please try again.')
+      console.error('Signup error:', err)
+      
+      // Handle different types of errors
+      if (err.response) {
+        // Server responded with error
+        setError(err.response?.data?.detail || 'Signup failed. Please try again.')
+      } else if (err.request) {
+        // Request made but no response (network error)
+        setError('Cannot connect to server. Please check if backend is running.')
+      } else {
+        // Something else happened
+        setError('An unexpected error occurred. Please try again.')
+      }
     } finally {
       setLoading(false)
     }

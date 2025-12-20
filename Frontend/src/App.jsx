@@ -3,19 +3,34 @@ import { useState, useEffect } from 'react'
 import SignUp from './pages/SignUp'
 import Login from './pages/Login'
 import Dashboard from './pages/Dashboard'
+import LandingPage from './pages/LandingPage'
+import { authService } from './services/api'
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false)
 
   useEffect(() => {
-    const token = localStorage.getItem('access_token')
-    setIsAuthenticated(!!token)
+    // Check if user is authenticated with valid token
+    const checkAuth = () => {
+      const isAuth = authService.isAuthenticated()
+      setIsAuthenticated(isAuth)
+    }
+
+    checkAuth()
+
+    // Listen for storage changes (logout in other tabs)
+    const handleStorageChange = () => {
+      checkAuth()
+    }
+
+    window.addEventListener('storage', handleStorageChange)
+    return () => window.removeEventListener('storage', handleStorageChange)
   }, [])
 
   return (
     <Router>
       <Routes>
-        <Route path="/" element={<Dashboard />} />
+        <Route path="/" element={<LandingPage />} />
         <Route path="/signup" element={<SignUp setAuth={setIsAuthenticated} />} />
         <Route path="/login" element={<Login setAuth={setIsAuthenticated} />} />
         <Route 
