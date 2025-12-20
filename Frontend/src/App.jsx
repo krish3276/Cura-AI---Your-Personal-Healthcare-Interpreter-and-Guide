@@ -2,7 +2,6 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import { useState, useEffect } from 'react'
 import SignUp from './pages/SignUp'
 import Login from './pages/Login'
-import Dashboard from './pages/Dashboard'
 import LandingPage from './pages/LandingPage'
 import { authService } from './services/api'
 
@@ -33,10 +32,6 @@ function App() {
         <Route path="/" element={<LandingPage />} />
         <Route path="/signup" element={<SignUp setAuth={setIsAuthenticated} />} />
         <Route path="/login" element={<Login setAuth={setIsAuthenticated} />} />
-        <Route 
-          path="/dashboard" 
-          element={isAuthenticated ? <Dashboard /> : <Navigate to="/login" />} 
-        />
       </Routes>
     </Router>
   )
