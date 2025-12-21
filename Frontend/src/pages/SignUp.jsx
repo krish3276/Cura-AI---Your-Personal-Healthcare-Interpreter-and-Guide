@@ -1,6 +1,8 @@
 import { useState } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
 import { authService } from '../services/api'
+import Navbar from '../components/Navbar'
+import Footer from '../components/Footer'
 import './SignUp.css'
 
 function SignUp({ setAuth }) {
@@ -77,7 +79,9 @@ function SignUp({ setAuth }) {
   }
 
   return (
-    <div className="auth-container">
+    <>
+      <Navbar />
+      <div className="auth-container">
       <div className="auth-card">
         <div className="auth-header">
           <h1 className="app-title">Cura AI</h1>
@@ -170,6 +174,8 @@ function SignUp({ setAuth }) {
         </p>
       </div>
     </div>
+    <Footer />
+  </>
   )
 }
 

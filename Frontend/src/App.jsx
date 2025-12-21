@@ -3,6 +3,10 @@ import { useState, useEffect } from 'react'
 import SignUp from './pages/SignUp'
 import Login from './pages/Login'
 import LandingPage from './pages/LandingPage'
+import Features from './pages/Features'
+import PrescriptionUpload from './pages/PrescriptionUpload'
+import ReportAnalyzer from './pages/ReportAnalyzer'
+import SymptomChecker from './pages/SymptomChecker'
 import { authService } from './services/api'
 
 function App() {
@@ -30,6 +34,10 @@ function App() {
     <Router>
       <Routes>
         <Route path="/" element={<LandingPage />} />
+        <Route path="/features" element={<Features />} />
+        <Route path="/prescription" element={<PrescriptionUpload />} />
+        <Route path="/report-analyzer" element={<ReportAnalyzer />} />
+        <Route path="/symptom-checker" element={<SymptomChecker />} />
         <Route path="/signup" element={<SignUp setAuth={setIsAuthenticated} />} />
         <Route path="/login" element={<Login setAuth={setIsAuthenticated} />} />
       </Routes>
