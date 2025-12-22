@@ -1,0 +1,154 @@
+.error-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 3rem 2rem;
+  text-align: center;
+  background: #fef2f2;
+  border-radius: 12px;
+  border: 2px solid #fee2e2;
+  margin: 2rem 0;
+}
+
+.error-icon {
+  width: 80px;
+  height: 80px;
+  margin-bottom: 1.5rem;
+  color: #ef4444;
+  background: #ffffff;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 6px rgba(239, 68, 68, 0.1);
+}
+
+.error-icon svg {
+  width: 48px;
+  height: 48px;
+}
+
+.error-title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #991b1b;
+  margin-bottom: 0.75rem;
+}
+
+.error-details {
+  font-size: 1rem;
+  color: #7f1d1d;
+  margin-bottom: 1.5rem;
+  max-width: 500px;
+  line-height: 1.6;
+}
+
+.error-suggestions {
+  background: #ffffff;
+  padding: 1.5rem;
+  border-radius: 8px;
+  text-align: left;
+  max-width: 400px;
+  margin-bottom: 1.5rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.error-suggestions p {
+  font-weight: 600;
+  color: #1e293b;
+  margin-bottom: 0.75rem;
+}
+
+.error-suggestions ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.error-suggestions li {
+  padding: 0.5rem 0;
+  color: #475569;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.error-suggestions li::before {
+  content: "•";
+  color: #06b6d4;
+  font-weight: bold;
+  font-size: 1.2rem;
+}
+
+.btn-retry {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.875rem 2rem;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #ffffff;
+  background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s;
+  box-shadow: 0 4px 6px rgba(239, 68, 68, 0.2);
+}
+
+.btn-retry:hover {
+  box-shadow: 0 6px 12px rgba(239, 68, 68, 0.3);
+}
+
+.btn-retry:focus {
+  outline: 3px solid #fca5a5;
+  outline-offset: 2px;
+}
+
+.btn-retry svg {
+  width: 20px;
+  height: 20px;
+}
+
+/* High contrast mode */
+@media (prefers-contrast: high) {
+  .error-state {
+    border-width: 3px;
+  }
+  
+  .error-title {
+    font-weight: 700;
+  }
+  
+  .btn-retry {
+    border: 2px solid #ffffff;
+  }
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+  .error-state {
+    background: #7f1d1d;
+    border-color: #991b1b;
+  }
+  
+  .error-title {
+    color: #fef2f2;
+  }
+  
+  .error-details {
+    color: #fecaca;
+  }
+  
+  .error-suggestions {
+    background: #991b1b;
+  }
+  
+  .error-suggestions p {
+    color: #fef2f2;
+  }
+  
+  .error-suggestions li {
+    color: #fecaca;
+  }
+}

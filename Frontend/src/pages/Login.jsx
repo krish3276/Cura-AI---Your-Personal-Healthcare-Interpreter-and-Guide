@@ -35,15 +35,32 @@ function Login({ setAuth }) {
     setLoading(true)
 
     try {
-      await authService.login({
+      console.log('Attempting login to:', 'http://localhost:8000/api/auth/login')
+      console.log('Login credentials:', { username: formData.username })
+      
+      const result = await authService.login({
         username: formData.username,
         password: formData.password
       })
       
+      console.log('Login successful:', result)
+      
       setAuth(true)
       navigate('/dashboard')
     } catch (err) {
-      setError(err.response?.data?.detail || 'Invalid credentials. Please try again.')
+      console.error('Login error:', err)
+      
+      if (err.response) {
+        const errorMsg = err.response?.data?.detail || 'Invalid credentials. Please try again.'
+        console.error('Server error:', err.response.status, errorMsg)
+        setError(errorMsg)
+      } else if (err.request) {
+        console.error('Network error - no response from server')
+        setError('Cannot connect to server. Please check if backend is running on http://localhost:8000')
+      } else {
+        console.error('Unexpected error:', err.message)
+        setError('An unexpected error occurred. Please try again.')
+      }
     } finally {
       setLoading(false)
     }

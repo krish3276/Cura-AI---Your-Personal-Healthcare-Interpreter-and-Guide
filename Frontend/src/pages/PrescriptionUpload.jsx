@@ -83,30 +83,61 @@ function PrescriptionUpload() {
       const formData = new FormData()
       formData.append('file', selectedFile)
 
-      // TODO: Replace with actual API endpoint
-      // const response = await fetch('/api/prescription/upload', {
-      //   method: 'POST',
-      //   body: formData
-      // })
-      // const data = await response.json()
-
-      // Simulated processing
-      await new Promise(resolve => setTimeout(resolve, 2000))
-
-      // Mock result
-      const mockResult = {
-        medications: [
-          { name: 'Amoxicillin', dosage: '500mg', frequency: 'Three times daily', duration: '7 days' },
-          { name: 'Ibuprofen', dosage: '400mg', frequency: 'As needed', duration: 'PRN for pain' }
-        ],
-        instructions: 'Take with food. Complete the full course of antibiotics.',
-        doctor: 'Dr. John Smith',
-        date: new Date().toLocaleDateString()
+      // Get auth token from localStorage
+      const token = localStorage.getItem('token')
+      
+      if (!token) {
+        setError('Please login first')
+        navigate('/login')
+        return
       }
 
-      setResult(mockResult)
+      // Call actual backend API
+      const response = await fetch('http://localhost:8000/api/prescription/upload', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`
+        },
+        body: formData
+      })
+
+      if (!response.ok) {
+        const errorData = await response.json()
+        throw new Error(errorData.detail || 'Upload failed')
+      }
+
+      const data = await response.json()
+      
+      // Parse medicines JSON string to array
+      let medications = []
+      try {
+        medications = JSON.parse(data.data.medicines || '[]')
+      } catch (e) {
+        console.error('Failed to parse medicines:', e)
+        medications = []
+      }
+
+      // Transform API response to match UI structure
+      const transformedResult = {
+        medications: medications.map(med => ({
+          name: med.medicine_name || 'Unknown',
+          dosage: med.dosage || 'Not detected',
+          frequency: med.instructions || 'See prescription',
+          duration: '',
+          confidence: med.confidence || 'low'
+        })),
+        extractedText: data.data.extracted_text || '',
+        explanation: data.data.simplified_explanation || '',
+        instructions: data.data.simplified_explanation || '',
+        processingStatus: data.data.processing_status,
+        filename: data.data.original_filename,
+        date: new Date(data.data.created_at).toLocaleDateString()
+      }
+
+      setResult(transformedResult)
     } catch (err) {
-      setError('Failed to process prescription. Please try again.')
+      console.error('Upload error:', err)
+      setError(err.message || 'Failed to process prescription. Please try again.')
     } finally {
       setIsProcessing(false)
     }

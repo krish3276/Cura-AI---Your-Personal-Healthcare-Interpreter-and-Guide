@@ -9,6 +9,8 @@ from contextlib import asynccontextmanager
 from config import settings
 from database import create_tables
 from auth.routes import router as auth_router
+from prescription.routes import router as prescription_router
+from symptoms.routes import router as symptoms_router
 
 
 @asynccontextmanager
@@ -43,6 +45,8 @@ app.add_middleware(
 
 # Include routers
 app.include_router(auth_router, prefix="/api/auth", tags=["Authentication"])
+app.include_router(prescription_router, prefix="/api/prescriptions", tags=["Prescriptions"])
+app.include_router(symptoms_router, prefix="/api/symptoms", tags=["Symptom Checker"])
 
 
 @app.get("/", tags=["Root"])

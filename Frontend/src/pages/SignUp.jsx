@@ -16,6 +16,7 @@ function SignUp({ setAuth }) {
   const [showPassword, setShowPassword] = useState(false)
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
   const [error, setError] = useState('')
+  const [success, setSuccess] = useState('')
   const [loading, setLoading] = useState(false)
 
   const handleChange = (e) => {
@@ -29,6 +30,7 @@ function SignUp({ setAuth }) {
   const handleSubmit = async (e) => {
     e.preventDefault()
     setError('')
+    setSuccess('')
 
     // Validation
     if (!formData.username || !formData.email || !formData.password || !formData.confirmPassword) {
@@ -49,7 +51,9 @@ function SignUp({ setAuth }) {
     setLoading(true)
 
     try {
-      console.log('Submitting signup...')
+      console.log('Submitting signup to:', 'http://localhost:8000/api/auth/signup')
+      console.log('Signup data:', { username: formData.username, email: formData.email })
+      
       const result = await authService.signup({
         username: formData.username,
         email: formData.email,
@@ -57,20 +61,31 @@ function SignUp({ setAuth }) {
       })
       
       console.log('Signup successful:', result)
-      // Redirect to login page after successful signup
-      navigate('/login')
+      
+      // Show success message
+      setSuccess('Account created successfully! Redirecting to login...')
+      
+      // Redirect to login page after 2 seconds
+      setTimeout(() => {
+        navigate('/login', { state: { message: 'Account created! Please login.' } })
+      }, 2000)
+      
     } catch (err) {
       console.error('Signup error:', err)
       
       // Handle different types of errors
       if (err.response) {
         // Server responded with error
-        setError(err.response?.data?.detail || 'Signup failed. Please try again.')
+        const errorMsg = err.response?.data?.detail || 'Signup failed. Please try again.'
+        console.error('Server error:', err.response.status, errorMsg)
+        setError(errorMsg)
       } else if (err.request) {
         // Request made but no response (network error)
-        setError('Cannot connect to server. Please check if backend is running.')
+        console.error('Network error - no response from server')
+        setError('Cannot connect to server. Please check if backend is running on http://localhost:8000')
       } else {
         // Something else happened
+        console.error('Unexpected error:', err.message)
         setError('An unexpected error occurred. Please try again.')
       }
     } finally {
@@ -92,6 +107,7 @@ function SignUp({ setAuth }) {
         </div>
 
         {error && <div className="error-message">{error}</div>}
+        {success && <div className="success-message">{success}</div>}
 
         <form onSubmit={handleSubmit} className="auth-form">
           <div className="form-group">

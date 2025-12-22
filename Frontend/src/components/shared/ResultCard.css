@@ -1,0 +1,159 @@
+.result-card {
+  background: #ffffff;
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  border-left: 4px solid #06b6d4;
+  transition: all 0.3s;
+}
+
+.result-card:hover {
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+  transform: translateY(-2px);
+}
+
+.result-card:focus-within {
+  outline: 3px solid #06b6d4;
+  outline-offset: 2px;
+}
+
+.card-header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1rem;
+  padding-bottom: 1rem;
+  border-bottom: 2px solid #f1f5f9;
+}
+
+.card-icon {
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  background: #e0f2fe;
+  color: #06b6d4;
+  flex-shrink: 0;
+}
+
+.card-icon svg {
+  width: 24px;
+  height: 24px;
+}
+
+.card-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #1e293b;
+  margin: 0;
+}
+
+.card-content {
+  color: #475569;
+  font-size: 1rem;
+  line-height: 1.7;
+}
+
+/* Card variants */
+.card-success {
+  border-left-color: #10b981;
+}
+
+.card-success .card-icon {
+  background: #d1fae5;
+  color: #10b981;
+}
+
+.card-warning {
+  border-left-color: #f59e0b;
+}
+
+.card-warning .card-icon {
+  background: #fef3c7;
+  color: #f59e0b;
+}
+
+.card-info {
+  border-left-color: #3b82f6;
+}
+
+.card-info .card-icon {
+  background: #dbeafe;
+  color: #3b82f6;
+}
+
+.card-danger {
+  border-left-color: #ef4444;
+}
+
+.card-danger .card-icon {
+  background: #fee2e2;
+  color: #ef4444;
+}
+
+/* Content styling helpers */
+.card-content ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.card-content li {
+  padding: 0.5rem 0;
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+}
+
+.card-content li::before {
+  content: "✓";
+  color: #10b981;
+  font-weight: bold;
+  flex-shrink: 0;
+  margin-top: 0.1rem;
+}
+
+.card-content p:first-child {
+  margin-top: 0;
+}
+
+.card-content p:last-child {
+  margin-bottom: 0;
+}
+
+/* Responsive */
+@media (max-width: 640px) {
+  .result-card {
+    padding: 1.25rem;
+  }
+  
+  .card-title {
+    font-size: 1.125rem;
+  }
+  
+  .card-content {
+    font-size: 0.9375rem;
+  }
+}
+
+/* High contrast mode */
+@media (prefers-contrast: high) {
+  .result-card {
+    border-left-width: 6px;
+    box-shadow: 0 0 0 2px #000000;
+  }
+  
+  .card-title {
+    font-weight: 700;
+  }
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .result-card:hover {
+    transform: none;
+  }
+}

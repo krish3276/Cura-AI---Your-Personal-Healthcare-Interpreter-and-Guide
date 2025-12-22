@@ -50,6 +50,20 @@ logs/
 .DS_Store
 Thumbs.db
 
+# Uploads - User Files (IMPORTANT: Never commit user data)
+uploads/
+uploads/prescriptions/
+uploads/reports/
+*.jpg
+*.jpeg
+*.png
+*.pdf
+
+# Test files
+test_images/
+sample_data/
+Thumbs.db
+
 # Testing
 .pytest_cache/
 .coverage

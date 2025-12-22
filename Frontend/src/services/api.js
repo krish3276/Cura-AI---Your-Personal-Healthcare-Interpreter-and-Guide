@@ -127,4 +127,57 @@ export const authService = {
   },
 }
 
+// Prescription Service
+export const prescriptionService = {
+  upload: async (file) => {
+    const formData = new FormData()
+    formData.append('file', file)
+    
+    const response = await api.post('/prescriptions/upload', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    })
+    return response.data
+  },
+
+  getList: async (skip = 0, limit = 20) => {
+    const response = await api.get(`/prescriptions/list?skip=${skip}&limit=${limit}`)
+    return response.data
+  },
+
+  getDetail: async (id) => {
+    const response = await api.get(`/prescriptions/${id}`)
+    return response.data
+  },
+
+  delete: async (id) => {
+    const response = await api.delete(`/prescriptions/${id}`)
+    return response.data
+  }
+}
+
+// Symptom Checker Service
+export const symptomService = {
+  analyze: async (data) => {
+    const response = await api.post('/symptoms/analyze', data)
+    return response.data
+  },
+
+  getHistory: async (skip = 0, limit = 20) => {
+    const response = await api.get(`/symptoms/history?skip=${skip}&limit=${limit}`)
+    return response.data
+  },
+
+  getDetail: async (id) => {
+    const response = await api.get(`/symptoms/${id}`)
+    return response.data
+  },
+
+  delete: async (id) => {
+    const response = await api.delete(`/symptoms/${id}`)
+    return response.data
+  }
+}
+
 export default api
