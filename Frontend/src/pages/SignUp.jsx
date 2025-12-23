@@ -38,13 +38,40 @@ function SignUp({ setAuth }) {
       return
     }
 
-    if (formData.password !== formData.confirmPassword) {
-      setError('Passwords do not match')
+    // Username validation
+    if (formData.username.length < 3) {
+      setError('Username must be at least 3 characters')
       return
     }
 
+    if (!/^[a-zA-Z0-9_]+$/.test(formData.username)) {
+      setError('Username can only contain letters, numbers, and underscores')
+      return
+    }
+
+    // Password validation
     if (formData.password.length < 8) {
       setError('Password must be at least 8 characters')
+      return
+    }
+
+    if (!/[A-Z]/.test(formData.password)) {
+      setError('Password must contain at least one uppercase letter')
+      return
+    }
+
+    if (!/[a-z]/.test(formData.password)) {
+      setError('Password must contain at least one lowercase letter')
+      return
+    }
+
+    if (!/\d/.test(formData.password)) {
+      setError('Password must contain at least one number')
+      return
+    }
+
+    if (formData.password !== formData.confirmPassword) {
+      setError('Passwords do not match')
       return
     }
 
@@ -76,7 +103,25 @@ function SignUp({ setAuth }) {
       // Handle different types of errors
       if (err.response) {
         // Server responded with error
-        const errorMsg = err.response?.data?.detail || 'Signup failed. Please try again.'
+        let errorMsg = 'Signup failed. Please try again.'
+        
+        // Handle FastAPI validation errors (422)
+        if (err.response.status === 422 && Array.isArray(err.response?.data?.detail)) {
+          // Extract validation error messages
+          const validationErrors = err.response.data.detail
+            .map(err => err.msg || err.message)
+            .join(', ')
+          errorMsg = `Validation error: ${validationErrors}`
+        } 
+        // Handle string error messages
+        else if (typeof err.response?.data?.detail === 'string') {
+          errorMsg = err.response.data.detail
+        }
+        // Handle object error messages with a message property
+        else if (err.response?.data?.detail?.message) {
+          errorMsg = err.response.data.detail.message
+        }
+        
         console.error('Server error:', err.response.status, errorMsg)
         setError(errorMsg)
       } else if (err.request) {
@@ -143,7 +188,7 @@ function SignUp({ setAuth }) {
                 type={showPassword ? 'text' : 'password'}
                 id="password"
                 name="password"
-                placeholder="8+ characters"
+                placeholder="8+ characters with uppercase, lowercase & number"
                 value={formData.password}
                 onChange={handleChange}
                 required
@@ -156,6 +201,9 @@ function SignUp({ setAuth }) {
                 {/* {showPassword ? '👁️' : '🙈'}x */}
               </button>
             </div>
+            <small style={{ color: '#666', fontSize: '0.85em', marginTop: '4px', display: 'block' }}>
+              Must include uppercase, lowercase, and a number
+            </small>
           </div>
 
           <div className="form-group">

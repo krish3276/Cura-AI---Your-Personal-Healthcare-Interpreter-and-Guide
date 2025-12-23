@@ -40,6 +40,21 @@ function App() {
         <Route path="/symptom-checker" element={<SymptomChecker />} />
         <Route path="/signup" element={<SignUp setAuth={setIsAuthenticated} />} />
         <Route path="/login" element={<Login setAuth={setIsAuthenticated} />} />
+        
+        {/* Redirect /dashboard to symptom-checker for logged-in users */}
+        <Route 
+          path="/dashboard" 
+          element={
+            isAuthenticated ? (
+              <Navigate to="/symptom-checker" replace />
+            ) : (
+              <Navigate to="/login" replace />
+            )
+          } 
+        />
+        
+        {/* Catch-all route for 404 - redirect to home */}
+        <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </Router>
   )

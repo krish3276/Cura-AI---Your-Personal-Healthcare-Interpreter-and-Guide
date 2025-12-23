@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { prescriptionService } from '../services/api'
 import Navbar from '../components/Navbar'
 import Footer from '../components/Footer'
 import './PrescriptionUpload.css'
@@ -80,33 +81,8 @@ function PrescriptionUpload() {
     setError('')
 
     try {
-      const formData = new FormData()
-      formData.append('file', selectedFile)
-
-      // Get auth token from localStorage
-      const token = localStorage.getItem('token')
-      
-      if (!token) {
-        setError('Please login first')
-        navigate('/login')
-        return
-      }
-
-      // Call actual backend API
-      const response = await fetch('http://localhost:8000/api/prescription/upload', {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${token}`
-        },
-        body: formData
-      })
-
-      if (!response.ok) {
-        const errorData = await response.json()
-        throw new Error(errorData.detail || 'Upload failed')
-      }
-
-      const data = await response.json()
+      // Use the prescriptionService which handles auth automatically
+      const data = await prescriptionService.upload(selectedFile)
       
       // Parse medicines JSON string to array
       let medications = []
@@ -137,7 +113,17 @@ function PrescriptionUpload() {
       setResult(transformedResult)
     } catch (err) {
       console.error('Upload error:', err)
-      setError(err.message || 'Failed to process prescription. Please try again.')
+      
+      // Handle authentication errors
+      if (err.response?.status === 401) {
+        setError('Please log in to upload prescriptions')
+        setTimeout(() => navigate('/login'), 2000)
+        return
+      }
+      
+      // Handle other errors
+      const errorMsg = err.response?.data?.detail || err.message || 'Failed to process prescription. Please try again.'
+      setError(errorMsg)
     } finally {
       setIsProcessing(false)
     }

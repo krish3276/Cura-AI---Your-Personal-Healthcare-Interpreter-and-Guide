@@ -226,58 +226,126 @@ def parse_medicine_info(text: str) -> list:
     """
     medicines = []
     
-    # Pattern for medicine lines: Name + Dosage (numbers + units)
-    # Example: "Paracetamol 500mg twice daily"
-    # Example: "Amoxicillin 250 mg - 3 times daily"
+    # Pattern for medicine lines with various formats
+    # Example formats:
+    # - "Tab. Augmentin 625mg"
+    # - "Tablet Paracetamol 500 mg"
+    # - "Cap. Amoxicillin 250mg"
+    # - "Syrup Crocin 100ml"
     
     lines = text.split('\n')
     
-    # Dosage pattern: numbers followed by units
-    dosage_pattern = r'\b(\d+\.?\d*)\s*(mg|ml|mcg|g|tablet|capsule|cap|tab)s?\b'
+    # Enhanced dosage pattern: numbers followed by units
+    dosage_pattern = r'\b(\d+\.?\d*)\s*(mg|ml|mcg|g|gm|tablet|capsule|cap|tab|syrup|suspension)s?\b'
     
-    # Common frequency words
-    frequency_keywords = ['daily', 'times', 'day', 'morning', 'night', 'evening', 'hours', 'weekly']
+    # Medicine prefix pattern (Tab., Cap., Syp., Inj., etc.)
+    medicine_prefix_pattern = r'(tab\.?|tablet|cap\.?|capsule|syp\.?|syrup|inj\.?|injection|susp\.?|suspension|drops?|ointment|cream|lotion)'
+    
+    # Dosage frequency pattern (1-0-1, 1-1-1, etc.)
+    frequency_pattern = r'(\d+\s*[-–—]\s*\d+\s*[-–—]\s*\d+)'
+    
+    # Duration pattern (x 5days, for 7 days, etc.)
+    duration_pattern = r'(x\s*\d+\s*days?|for\s*\d+\s*days?|x\s*\d+\s*weeks?|\d+\s*days?)'
+    
+    # Timing pattern (before/after meals, morning/evening, etc.)
+    timing_pattern = r'(before|after)\s*(meals?|food|breakfast|lunch|dinner)'
     
     for line in lines:
+        line_original = line
         line = line.strip()
         if not line or len(line) < 3:
             continue
         
-        # Check if line contains dosage information
-        dosage_match = re.search(dosage_pattern, line, re.IGNORECASE)
+        # Skip header lines and notes
+        if any(skip in line.lower() for skip in ['dr.', 'doctor', 'prescription', 'clinic', 'hospital', 'phone', 'email', 'web']):
+            continue
         
-        if dosage_match:
-            # Extract medicine name (usually first 1-3 words before dosage)
-            dosage_position = dosage_match.start()
-            medicine_name_part = line[:dosage_position].strip()
+        # Check if line has medicine prefix or dosage
+        has_prefix = re.search(medicine_prefix_pattern, line, re.IGNORECASE)
+        has_dosage = re.search(dosage_pattern, line, re.IGNORECASE)
+        has_frequency = re.search(frequency_pattern, line)
+        
+        if has_prefix or has_dosage or has_frequency:
+            # Extract medicine name
+            medicine_name = ""
+            dosage = "Not specified"
+            instructions = ""
             
-            # Clean medicine name (remove numbers, bullets)
-            medicine_name = re.sub(r'^[\d\.\)\-\*]+\s*', '', medicine_name_part)
-            medicine_name = medicine_name.strip()
+            # Remove prefix to get medicine name
+            if has_prefix:
+                # Get text after the prefix
+                prefix_end = has_prefix.end()
+                remaining_text = line[prefix_end:].strip()
+                
+                # Medicine name is before the dosage (if dosage exists)
+                if has_dosage:
+                    # Search for dosage in the remaining text only
+                    dosage_match_in_remaining = re.search(dosage_pattern, remaining_text, re.IGNORECASE)
+                    if dosage_match_in_remaining:
+                        dosage_start_pos = dosage_match_in_remaining.start()
+                        medicine_name = remaining_text[:dosage_start_pos].strip()
+                        dosage = dosage_match_in_remaining.group(0)
+                    else:
+                        # Fallback: use first word as medicine name
+                        medicine_name = remaining_text.split()[0] if remaining_text else ""
+                        dosage = has_dosage.group(0)
+                else:
+                    # No dosage, take first 1-3 words as medicine name
+                    words = remaining_text.split()
+                    medicine_name = ' '.join(words[:min(3, len(words))])
+            elif has_dosage:
+                # No prefix, extract name before dosage
+                dosage_start = has_dosage.start()
+                medicine_name = line[:dosage_start].strip()
+                # Remove leading numbers/bullets
+                medicine_name = re.sub(r'^[\d\.\)\-\*•]+\s*', '', medicine_name).strip()
+                dosage = has_dosage.group(0)
             
-            # Get dosage
-            dosage = dosage_match.group(0)
+            # Build instructions
+            instruction_parts = []
             
-            # Get full instructions (everything after medicine name)
-            instructions = line[len(medicine_name):].strip()
+            if has_frequency:
+                frequency = has_frequency.group(0)
+                instruction_parts.append(f"{frequency} (Morning-Afternoon-Night)")
             
-            # Check if frequency is mentioned
-            has_frequency = any(keyword in line.lower() for keyword in frequency_keywords)
+            duration_match = re.search(duration_pattern, line, re.IGNORECASE)
+            if duration_match:
+                instruction_parts.append(duration_match.group(0))
             
-            medicine_info = {
-                "medicine_name": medicine_name if medicine_name else "[Name unclear]",
-                "dosage": dosage,
-                "instructions": instructions if instructions else line,
-                "confidence": "medium" if has_frequency and medicine_name else "low",
-                "requires_verification": True  # Always require manual check
-            }
-            medicines.append(medicine_info)
+            timing_match = re.search(timing_pattern, line, re.IGNORECASE)
+            if timing_match:
+                instruction_parts.append(timing_match.group(0))
+            
+            instructions = ', '.join(instruction_parts) if instruction_parts else line
+            
+            # Determine confidence based on what we found
+            confidence = "high" if (medicine_name and has_dosage and has_frequency) else \
+                        "medium" if (medicine_name and (has_dosage or has_frequency)) else "low"
+            
+            if medicine_name:
+                medicine_info = {
+                    "medicine_name": medicine_name,
+                    "dosage": dosage,
+                    "instructions": instructions,
+                    "confidence": confidence,
+                    "requires_verification": True  # Always require manual check
+                }
+                medicines.append(medicine_info)
     
-    if not medicines:
+    # Remove duplicates
+    seen = set()
+    unique_medicines = []
+    for med in medicines:
+        med_key = med['medicine_name'].lower()
+        if med_key not in seen and med_key.strip():
+            seen.add(med_key)
+            unique_medicines.append(med)
+    
+    if not unique_medicines:
         return [{
             "message": "⚠️ No medicines detected automatically.",
             "recommendation": "Please review the extracted text manually and consult your doctor or pharmacist.",
             "requires_verification": True
         }]
     
-    return medicines
+    return unique_medicines

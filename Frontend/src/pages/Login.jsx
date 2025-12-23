@@ -46,7 +46,8 @@ function Login({ setAuth }) {
       console.log('Login successful:', result)
       
       setAuth(true)
-      navigate('/dashboard')
+      // Redirect to symptom checker (main feature page)
+      navigate('/symptom-checker')
     } catch (err) {
       console.error('Login error:', err)
       

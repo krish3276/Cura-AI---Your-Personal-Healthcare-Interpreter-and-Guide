@@ -133,7 +133,7 @@ export const prescriptionService = {
     const formData = new FormData()
     formData.append('file', file)
     
-    const response = await api.post('/prescriptions/upload', formData, {
+    const response = await api.post('/prescription/upload', formData, {
       headers: {
         'Content-Type': 'multipart/form-data',
       },
@@ -142,17 +142,17 @@ export const prescriptionService = {
   },
 
   getList: async (skip = 0, limit = 20) => {
-    const response = await api.get(`/prescriptions/list?skip=${skip}&limit=${limit}`)
+    const response = await api.get(`/prescription/list?skip=${skip}&limit=${limit}`)
     return response.data
   },
 
   getDetail: async (id) => {
-    const response = await api.get(`/prescriptions/${id}`)
+    const response = await api.get(`/prescription/${id}`)
     return response.data
   },
 
   delete: async (id) => {
-    const response = await api.delete(`/prescriptions/${id}`)
+    const response = await api.delete(`/prescription/${id}`)
     return response.data
   }
 }
